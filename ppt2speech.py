@@ -19,20 +19,20 @@ my_file = client.files.create(
 #print(my_file)
 
 my_assistant = client.beta.assistants.create(
-    instructions="You are a lecture speaker",
-    name="LecturePresenter",
-    tools=[{"type": "retrieval"}],
-    model="gpt-3.5-turbo",
+  instructions="You are a lecture speaker",
+  name="LecturePresenter",
+  tools=[{"type": "retrieval"}],
+  model="gpt-3.5-turbo",
 )
 #print(my_assistant)
 
 thread = client.beta.threads.create()
 
 message = client.beta.threads.messages.create(
-    thread_id=thread.id,
-    role="user",
-    content="give a presentation speech on first 3 slides of this file in natural language.",
-    file_ids=[my_file.id],
+  thread_id=thread.id,
+  role="user",
+  content="give a presentation speech on first 3 slides of this file in natural language.",
+  file_ids=[my_file.id],
 )
 
 run = client.beta.threads.runs.create_and_poll(
@@ -42,14 +42,14 @@ run = client.beta.threads.runs.create_and_poll(
 
 #print(run)
 def uniquify(path):
-    filename, extension = os.path.splitext(path)
-    counter = 1
+  filename, extension = os.path.splitext(path)
+  counter = 1
 
-    while os.path.exists(path):
-        path = filename + " (" + str(counter) + ")" + extension
-        counter += 1
+  while os.path.exists(path):
+    path = filename + " (" + str(counter) + ")" + extension
+    counter += 1
 
-    return path
+  return path
 
 if run.status == 'completed': 
   messages = client.beta.threads.messages.list(
@@ -71,6 +71,9 @@ if run.status == 'completed':
   playsound(speech_file_path)
 else:
   print(run.status)
+
+
+client.files.delete(my_file.id)
 
 delete_response = client.beta.assistants.delete(my_assistant.id)
 #print(delete_response)
